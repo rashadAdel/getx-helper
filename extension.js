@@ -24,12 +24,21 @@ function activate(context) {
 
           createFolders(_path);
           setTimeout(() => createFirstFiles(folderPath, _text.trim()), 1000);
-          terminalCommand(
-            'flutter pub get ; dart pub outdated --mode=null-safety ; dart pub upgrade --null-safety ; dart pub global activate flutterfire_cli  ; exit '
-          );
+          
+          var term1 = vscode.window.createTerminal('flutter');
+          term1.show();
+          term1.sendText('flutter pub get ');
+          term1.sendText(` dart pub upgrade --null-safety `);
+          term1.sendText(` dart pub global activate flutterfire_cli`);
+          term1.sendText(`exit `);
+          term1.dispose();
+
+
           var term = vscode.window.createTerminal(`firebase`);
           term.show();
-          term.sendText(`firebase init ; flutterfire configure ; exit`);
+          term.sendText(`firebase init`);
+          term.sendText( `flutterfire configure`);
+          term.sendText( `exit`);
           term.show();
 
           vscode.window.showInformationMessage(`Done!`);
