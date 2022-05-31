@@ -27,15 +27,17 @@ function activate(context) {
           
           var term1 = vscode.window.createTerminal('flutter');
           term1.show();
-          term1.sendText('flutter pub get ');
-          term1.sendText(` dart pub upgrade --null-safety `);
           term1.sendText(` dart pub global activate flutterfire_cli`);
+          term1.sendText(` dart pub upgrade --null-safety `);
+          term1.sendText('flutter pub get ');
           term1.sendText(`exit `);
           term1.dispose();
 
 
           var term = vscode.window.createTerminal(`firebase`);
           term.show();
+          term.sendText(`npm install -g firebase-tools`);
+          term.sendText(`firebase login`);
           term.sendText(`firebase init`);
           term.sendText( `flutterfire configure`);
           term.sendText( `exit`);
