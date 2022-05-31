@@ -11,7 +11,7 @@ There are usually many folders and files that need to be created to start a new 
 
 This extension will solve the issue for you with a simple `wavi`
 
-Based in [getx_pattern](https://github.com/kauemurakami/getx_pattern) - [@kauemurakami](https://github.com/rashadAdel)
+Based in  [@RashadAdel](https://github.com/rashadAdel)
 
 ![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/MartinSilvaMolina.wavi-getx-awesome?style=for-the-badge&logo=visual-studio-code)
 ![Visual Studio Marketplace Rating](https://img.shields.io/visual-studio-marketplace/r/MartinSilvaMolina.wavi-getx-awesome?style=for-the-badge&logo=visual-studio-code)
