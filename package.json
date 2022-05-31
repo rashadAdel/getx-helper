@@ -1,8 +1,8 @@
 {
 	"name": "getx-helper",
-	"displayName": "Wavi GetX Awesome",
-	"description": "Wavi GetX Awesome Extension!",
-	"publisher": "MartinSilvaMolina",
+	"displayName": "GetX  Helper Awesome",
+	"description": "GetX Helper Awesome Extension!",
+	"publisher": "rashadAdel",
 	"version": "1.0.2",
 	"engines": {
 	  "vscode": "^1.56.0"
@@ -16,7 +16,7 @@
 	},
 	"repository": {
 	  "type": "git",
-	  "url": "https://github.com/msilvamolina/vscode-getx-helper/"
+	  "url": "https://github.com/rashadAdel/getx-helper"
 	},
 	"icon": "icon.png",
 	"activationEvents": [
