@@ -2,7 +2,7 @@
 	"name": "getx-helper",
 	"displayName": "GetX  Helper Awesome",
 	"description": "GetX Helper Awesome Extension!",
-	"publisher": "rashadAdel",
+	"publisher": "rashad-adel",
 	"version": "1.0.2",
 	"engines": {
 	  "vscode": "^1.56.0"
