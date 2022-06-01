@@ -62,6 +62,7 @@ Initial release of  GetX Awesome 😍 🚀
 
 No known issues so far.
 
-## Credits
+## Contact
 
-- [@rashadAdel](https://github.com/rashadAdel)
+- [@Web](https://portfolio.rashad-adel.com)  
+ [@GitHub](https://github.com/rashadAdel)
