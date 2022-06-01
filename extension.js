@@ -37,6 +37,7 @@ function activate(context) {
           var term = vscode.window.createTerminal(`firebase`);
           term.show();
           term.sendText(`npm firebase-tools --version || npm install -g firebase-tools`);
+          term.sendText(`try{npm firebase-tools --version }catch{ npm install -g firebase-tools}`);
           term.sendText(`firebase login`);
           term.sendText(`firebase init`);
           term.sendText( `flutterfire configure`);

@@ -3,7 +3,7 @@
 	"displayName": "GetX  Helper Awesome",
 	"description": "GetX Helper Awesome Extension!",
 	"publisher": "rashad-adel",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"engines": {
 	  "vscode": "^1.56.0"
 	},
