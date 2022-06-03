@@ -65,4 +65,4 @@ No known issues so far.
 ## Contact
 
 - [@Web](https://portfolio.rashad-adel.com)  
- [@GitHub](https://github.com/rashadAdel)
+- [@GitHub](https://github.com/rashadAdel)
