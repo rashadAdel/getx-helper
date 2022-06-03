@@ -3,7 +3,7 @@
 	"displayName": "GetX  Helper Awesome",
 	"description": "GetX Helper Awesome Extension!",
 	"publisher": "rashad-adel",
-	"version": "1.0.4",
+	"version": "1.1.0",
 	"engines": {
 	  "vscode": "^1.56.0"
 	},
@@ -11,7 +11,7 @@
 	  "Other"
 	],
 	"bugs": {
-	  "url": "https://github.com/msilvamolina/vscode-getx-helper/issues",
+	  "url": "https://github.com/rashadAdel/getx-helpe/issues",
 	  "email": "me@rashad-adel.com"
 	},
 	"repository": {
@@ -24,6 +24,7 @@
 	  "onCommand:getx-helper.new-page",
 	  "onCommand:getx-helper.new-model",
 	  "onCommand:getx-helper.new-failure",
+	  "onCommand:getx-helper.add-Firebase",
 	  "onCommand:getx-helper.new-repository",
 	  "onCommand:getx-helper.freezed-command"
 	],
@@ -33,6 +34,9 @@
 		{
 		  "command": "getx-helper.init-app",
 		  "title": "GetX Initialize App"
+		},{
+		  "command": "getx-helper.add-Firebase",
+		  "title": "GetX Add Firebase"
 		},
 		{
 		  "command": "getx-helper.new-page",

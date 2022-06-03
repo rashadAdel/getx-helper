@@ -25,6 +25,7 @@ Based in  [@RashadAdel](https://github.com/rashadAdel)
 | **Command**               | **Help Text **                                                                                                |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------- |
 |  GetX Initialize App  | Creates a folder and file structure based on GetX Pattern. Adding support for Dark Theme and Internalization. |
+|  GetX Add Firebase  | Creates a Project firebase and connect with it. |
 |  GetX New Page        | Creates a new page, along with its controller and binding. It also adds it to the routes file.                |
 |  GetX New Model       | Creates a ready-to-use model, using the freezed library and firestore.                                        |
 |  GetX New Failure     | Creates a ready-to-use failure, using the freezed library.                                                    |

@@ -2,51 +2,48 @@ const vscode = require(`vscode`);
 const fs = require(`fs`);
 const path = require(`path`);
 
-
-
-
 /**
  * @param {vscode.ExtensionContext} context
  */
 
 function activate(context) {
+  const folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
   let disposable = vscode.commands.registerCommand(
     `getx-helper.init-app`,
+
     function () {
-      
-      const folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
-
-      upgradeMinSdk(folderPath);
-      vscode.window.showInputBox({ placeHolder: `App name `,value:vscode.workspace.name }).then((text) => {
-        var _text = text.trim();
-        if (_text.length > 0) {
-          var _path = folderPath + `${path.sep}lib${path.sep}app${path.sep}`;
-
-          createFolders(_path);
-          setTimeout(() => createFirstFiles(folderPath, _text.trim()), 1000);
-          
-          var term1 = vscode.window.createTerminal('flutter');
+      var _path = folderPath + `${path.sep}lib${path.sep}app${path.sep}`;
+      createFolders(_path);
+      createFirstFiles(folderPath, vscode.workspace.name);
+      vscode.window
+        .showQuickPick(
+          [
+            { label: "Yes", description: "Use Firebase" },
+            { label: "No", description: "Don't use Firebase" },
+          ],
+          {
+            canPickMany: false,
+            placeHolder: "Do you want to use firebase?",
+          }
+        )
+        .then( (value) => {
+          if (value != undefined) {
+            var withFirebase = value.label == "Yes";
+            if (withFirebase) {
+               addFirebase(folderPath);
+            }
+          }
+        })
+        .then(() => {
+          var term1 = vscode.window.createTerminal("flutter");
           term1.show();
           term1.sendText(` dart pub global activate flutterfire_cli`);
           term1.sendText(` dart pub upgrade --null-safety `);
-          term1.sendText('flutter pub get ');
+          term1.sendText("flutter pub get ");
           term1.sendText(`exit `);
           term1.dispose();
-
-
-          var term = vscode.window.createTerminal(`firebase`);
-          term.show();
-          term.sendText(`npm firebase-tools --version || npm install -g firebase-tools`);
-          term.sendText(`try{npm firebase-tools --version }catch{ npm install -g firebase-tools}`);
-          term.sendText(`firebase login`);
-          term.sendText(`firebase init`);
-          term.sendText( `flutterfire configure`);
-          term.sendText( `exit`);
-          term.show();
-
           vscode.window.showInformationMessage(`Done!`);
-        }
-      });
+        });
     }
   );
 
@@ -55,7 +52,6 @@ function activate(context) {
   let disposable2 = vscode.commands.registerCommand(
     `getx-helper.new-page`,
     function () {
-      const folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
       var _path = folderPath + `${path.sep}lib${path.sep}app${path.sep}`;
 
       vscode.window.showInputBox({ placeHolder: `Page name` }).then((text) => {
@@ -76,7 +72,6 @@ function activate(context) {
   let disposable3 = vscode.commands.registerCommand(
     `getx-helper.new-model`,
     function () {
-      const folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
       var _path = folderPath + `${path.sep}lib${path.sep}app${path.sep}`;
 
       vscode.window.showInputBox({ placeHolder: `Model name` }).then((text) => {
@@ -96,7 +91,6 @@ function activate(context) {
   let disposable4 = vscode.commands.registerCommand(
     `getx-helper.new-failure`,
     function () {
-      const folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
       var _path = folderPath + `${path.sep}lib${path.sep}app${path.sep}`;
 
       vscode.window
@@ -114,10 +108,10 @@ function activate(context) {
   );
 
   context.subscriptions.push(disposable4);
+
   let disposable5 = vscode.commands.registerCommand(
     `getx-helper.new-repository`,
     function () {
-      const folderPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
       var _path = folderPath + `${path.sep}lib${path.sep}app${path.sep}`;
 
       vscode.window
@@ -134,6 +128,7 @@ function activate(context) {
   );
 
   context.subscriptions.push(disposable5);
+
   let disposable6 = vscode.commands.registerCommand(
     `getx-helper.freezed-command`,
     function () {
@@ -142,45 +137,82 @@ function activate(context) {
   );
 
   context.subscriptions.push(disposable6);
-}
 
-
-
-function upgradeMinSdk(myPath) {
-  fs.readFile(myPath + `${path.sep}android${path.sep}app${path.sep}build.gradle`, `utf8`, function (err, data) {
-    if (err) {
-      return console.log(err);
+  let disposable7 = vscode.commands.registerCommand(
+    `getx-helper.add-Firebase`,
+    function () {
+      addFirebase(folderPath);
     }
-    var result = data.replace(`flutter.minSdkVersion`, `21`);
-
-    fs.writeFile(
-      myPath + `${path.sep}android${path.sep}app${path.sep}build.gradle`,
-      result,
-      `utf8`,
-      function (err) {
-        if (err) return console.log(err);
-      }
-    );
-  });
+  );
+  context.subscriptions.push(disposable7);
 }
 
+function addFirebase(folderPath) {
+  upgradeMinSdk(folderPath);
+  createFirstFiles(folderPath, vscode.workspace.name, true);
+  var term = vscode.window.createTerminal(`firebase`);
+  term.show();
+  term.sendText(
+    `npm firebase-tools --version || npm install -g firebase-tools`
+  );
+  term.sendText(
+    `try{npm firebase-tools --version }catch{ npm install -g firebase-tools}`
+  );
+  term.sendText(`firebase login`);
+  // term.sendText(`firebase init`);
+  term.sendText(`flutterfire configure`);
+  term.sendText(`exit`);
+  term.show();
+}
+function upgradeMinSdk(myPath) {
+  fs.readFile(
+    myPath + `${path.sep}android${path.sep}app${path.sep}build.gradle`,
+    `utf8`,
+    function (err, data) {
+      if (err) {
+        return console.log(err);
+      }
+      var result = data.replace(`flutter.minSdkVersion`, `21`);
 
+      fs.writeFile(
+        myPath + `${path.sep}android${path.sep}app${path.sep}build.gradle`,
+        result,
+        `utf8`,
+        function (err) {
+          if (err) return console.log(err);
+        }
+      );
+    }
+  );
+}
 
 function createAssets(myPath) {
   fs.mkdir(myPath + `${path.sep}assets`, { recursive: true }, (err) => {
     if (err) throw err;
   });
 
-  fs.mkdir(myPath + `${path.sep}assets${path.sep}icons`, { recursive: true }, (err) => {
-    if (err) throw err;
-  });
+  fs.mkdir(
+    myPath + `${path.sep}assets${path.sep}icons`,
+    { recursive: true },
+    (err) => {
+      if (err) throw err;
+    }
+  );
 
-  fs.mkdir(myPath + `${path.sep}assets${path.sep}animation`, { recursive: true }, (err) => {
-    if (err) throw err;
-  });
-  fs.mkdir(myPath + `${path.sep}assets${path.sep}image`, { recursive: true }, (err) => {
-    if (err) throw err;
-  });
+  fs.mkdir(
+    myPath + `${path.sep}assets${path.sep}animation`,
+    { recursive: true },
+    (err) => {
+      if (err) throw err;
+    }
+  );
+  fs.mkdir(
+    myPath + `${path.sep}assets${path.sep}image`,
+    { recursive: true },
+    (err) => {
+      if (err) throw err;
+    }
+  );
 }
 
 /**
@@ -264,11 +296,11 @@ function deactivate() {}
  * @param {string} pageName
  */
 
-function createFirstFiles(pagePath, pageName) {
+function createFirstFiles(pagePath, pageName, withFirebase = false) {
   var _frendlyText = frendlyText(pageName);
   var _capitalizeText = capitalize(pageName);
 
-  createPubSpect(pagePath, _frendlyText);
+  createPubSpect(pagePath, _frendlyText, withFirebase);
 
   var _path = pagePath + `${path.sep}lib${path.sep}app${path.sep}`;
   createAppRoutes(_path);
@@ -279,7 +311,7 @@ function createFirstFiles(pagePath, pageName) {
   createMain(pagePath + `${path.sep}lib${path.sep}`, _capitalizeText);
   createController(_path, `main`);
   createController(_path, `navigation`);
-  createDependecyInjection(_path);
+  createDependecyInjection(_path, withFirebase);
   createThemes(_path);
   createThemesService(_path);
   createTraslationService(_path);
@@ -360,22 +392,36 @@ class MainLayout extends GetView<MainController> {
   );
 }
 
-function createDependecyInjection(pagePath) {
+function createDependecyInjection(pagePath, withFirebase = true) {
   var newPath = pagePath + `data${path.sep}services`;
 
-  const content = `import '../../controllers/navigation_controller.dart';
-  import '../../controllers/main_controller.dart';
-  import '../../../firebase_options.dart';
+  const content = `
+import '../../controllers/navigation_controller.dart';
+import '../../controllers/main_controller.dart';
+${
+  withFirebase
+    ? `
 import 'package:firebase_core/firebase_core.dart';
+import '../../../firebase_options.dart';
+`
+    : ""
+}
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 class DependecyInjection {
 static Future<void> init() async {
-  // firebase init
+${
+  withFirebase
+    ? `
+// firebase init
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+  
+`
+    : ""
+}
     await GetStorage.init();
 
     Get.put<NavigationController>(NavigationController());
@@ -602,7 +648,7 @@ function createTraslation(pagePath, pageName) {
   fs.writeFile(path.join(newPath, `ar.dart`), ar, (err) => console.log(err));
 }
 
-function createPubSpect(pagePath, pageName) {
+function createPubSpect(pagePath, pageName, withFirebase = true) {
   const content =
     `name: ` +
     pageName +
@@ -626,11 +672,17 @@ dependencies:
   dartz:
   json_serializable:
   rxdart:
+  flutter_screenutil:
+${
+  withFirebase
+    ? `
   firebase_auth:
   firebase_messaging:
   firebase_core:
   cloud_firestore:
-  flutter_screenutil:
+`
+    : ""
+}
 
 dev_dependencies:
   build_runner: 
@@ -769,7 +821,8 @@ abstract class ` +
 }
     `;
 
-  var newPath = pagePath + `data${path.sep}models${path.sep}` + pageName + `${path.sep}`;
+  var newPath =
+    pagePath + `data${path.sep}models${path.sep}` + pageName + `${path.sep}`;
 
   fs.mkdir(newPath, { recursive: true }, (err) => {
     if (err) throw err;
@@ -812,7 +865,8 @@ const factory ` +
 }
     `;
 
-  var newPath = pagePath + `data${path.sep}failures${path.sep}` + pageName + `${path.sep}`;
+  var newPath =
+    pagePath + `data${path.sep}failures${path.sep}` + pageName + `${path.sep}`;
 
   fs.mkdir(newPath, { recursive: true }, (err) => {
     if (err) throw err;
@@ -1026,8 +1080,7 @@ const capitalize = (s) => {
 };
 
 function terminalFreezedCommand() {
-  var command =
-    `flutter pub run build_runner watch --delete-conflicting-outputs`;
+  var command = `flutter pub run build_runner watch --delete-conflicting-outputs`;
   var term = vscode.window.createTerminal(`Dawn`);
   term.show();
   term.sendText(`${command}`);
