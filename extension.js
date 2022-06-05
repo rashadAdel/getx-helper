@@ -14,7 +14,7 @@ function activate(context) {
     function () {
       var _path = folderPath + `${path.sep}lib${path.sep}app${path.sep}`;
       createFolders(_path);
-      createFirstFiles(folderPath, vscode.workspace.name);
+      
       vscode.window
         .showQuickPick(
           [
@@ -29,6 +29,7 @@ function activate(context) {
         .then( (value) => {
           if (value != undefined) {
             var withFirebase = value.label == "Yes";
+            createFirstFiles(folderPath, vscode.workspace.name,withFirebase);
             if (withFirebase) {
                addFirebase(folderPath);
             }
