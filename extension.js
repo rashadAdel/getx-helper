@@ -1030,7 +1030,7 @@ function updateRoute(pagePath, pageName) {
       newData +
       `  static const ` +
       newName +
-      ` = /` +
+      ` = '/` +
       urlName +
       `';
 }`;
