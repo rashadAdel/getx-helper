@@ -17,7 +17,7 @@ function activate(context) {
       
       vscode.window
         .showQuickPick(
-          [
+          [      
             { label: "Yes", description: "Use Firebase" },
             { label: "No", description: "Don't use Firebase" },
           ],
@@ -58,10 +58,10 @@ function activate(context) {
       vscode.window.showInputBox({ placeHolder: `Page name` }).then((text) => {
         var _text = text.trim();
         if (_text.length > 0) {
-          var _frendlyText = frendlyText(_text);
-          createBinding(_path, _frendlyText);
-          createController(_path, _frendlyText);
-          createPage(_path, _frendlyText, true);
+          var _friendlyText = friendlyText(_text);
+          createBinding(_path, _friendlyText);
+          createController(_path, _friendlyText);
+          createPage(_path, _friendlyText, true);
           vscode.window.showInformationMessage(_text + ` created!`);
         }
       });
@@ -78,8 +78,8 @@ function activate(context) {
       vscode.window.showInputBox({ placeHolder: `Model name` }).then((text) => {
         var _text = text.trim();
         if (_text.length > 0) {
-          var _frendlyText = frendlyText(_text);
-          createModel(_path, _frendlyText);
+          var _friendlyText = friendlyText(_text);
+          createModel(_path, _friendlyText);
           terminalFreezedCommand();
           vscode.window.showInformationMessage(_text + ` created!`);
         }
@@ -99,8 +99,8 @@ function activate(context) {
         .then((text) => {
           var _text = text.trim();
           if (_text.length > 0) {
-            var _frendlyText = frendlyText(_text);
-            createFailure(_path, _frendlyText);
+            var _friendlyText = friendlyText(_text);
+            createFailure(_path, _friendlyText);
             terminalFreezedCommand();
             vscode.window.showInformationMessage(_text + ` created!`);
           }
@@ -120,8 +120,8 @@ function activate(context) {
         .then((text) => {
           var _text = text.trim();
           if (_text.length > 0) {
-            var _frendlyText = frendlyText(_text);
-            createRepository(_path, _frendlyText);
+            var _friendlyText = friendlyText(_text);
+            createRepository(_path, _friendlyText);
             vscode.window.showInformationMessage(_text + ` created!`);
           }
         });
@@ -239,8 +239,8 @@ function createFolders(pagePath) {
     `ui`,
     `ui${path.sep}global_widgets`,
     `ui${path.sep}layouts`,
-    `ui${path.sep}layouts${path.sep}main`,
-    `ui${path.sep}layouts${path.sep}main${path.sep}widgets`,
+    `ui${path.sep}layouts`,
+    `ui${path.sep}layouts${path.sep}widgets`,
     `ui${path.sep}pages`,
     `ui${path.sep}theme`,
     `ui${path.sep}utils`,
@@ -298,37 +298,38 @@ function deactivate() {}
  */
 
 function createFirstFiles(pagePath, pageName, withFirebase = false) {
-  var _frendlyText = frendlyText(pageName);
+  var _friendlyText = friendlyText(pageName);
   var _capitalizeText = capitalize(pageName);
 
-  createPubSpect(pagePath, _frendlyText, withFirebase);
+  createPubSpec(pagePath, _friendlyText, withFirebase);
 
   var _path = pagePath + `${path.sep}lib${path.sep}app${path.sep}`;
   createAppRoutes(_path);
   createAppPages(_path);
   createAppInformation(_path, _capitalizeText);
   createMainLayout(_path, _capitalizeText);
-  createTraslation(_path, _capitalizeText);
+  createResponsiveLayout(_path, _capitalizeText);
+  createTranslation(_path, _capitalizeText);
   createMain(pagePath + `${path.sep}lib${path.sep}`, _capitalizeText);
   createController(_path, `main`);
   createController(_path, `navigation`);
-  createDependecyInjection(_path, withFirebase);
+  createDependencyInjection(_path, withFirebase);
   createThemes(_path);
   createThemesService(_path);
-  createTraslationService(_path);
+  createTranslationService(_path);
   createModelHelpers(_path);
   cleanTest(pagePath);
 
-  _frendlyText = `home`;
+  _friendlyText = `home`;
 
-  createBinding(_path, _frendlyText);
-  createController(_path, _frendlyText);
-  createPage(_path, _frendlyText, false);
+  createBinding(_path, _friendlyText);
+  createController(_path, _friendlyText);
+  createPage(_path, _friendlyText, false);
 
-  _frendlyText = `unknown_route`;
-  createBinding(_path, _frendlyText);
-  createController(_path, _frendlyText);
-  createPage(_path, _frendlyText, false);
+  _friendlyText = `unknown_route`;
+  createBinding(_path, _friendlyText);
+  createController(_path, _friendlyText);
+  createPage(_path, _friendlyText, false);
 }
 
 function createAppRoutes(pagePath) {
@@ -346,14 +347,14 @@ function createAppRoutes(pagePath) {
   );
 }
 function createAppInformation(pagePath, pageName) {
-  var _frendlyText = frendlyText(pageName);
+  var _friendlyText = friendlyText(pageName);
 
   var newPath = pagePath + `config${path.sep}`;
 
   const content =
     `class AppInformation {
   static const name = '` +
-    _frendlyText +
+    _friendlyText +
     `';
   static const title = '` +
     pageName +
@@ -370,12 +371,51 @@ function createAppInformation(pagePath, pageName) {
   );
 }
 
-function createMainLayout(pagePath, pageName) {
-  var newPath = pagePath + `ui${path.sep}layouts${path.sep}main${path.sep}`;
+function createResponsiveLayout(pagePath, pageName) {
+  var newPath = pagePath + `ui${path.sep}layouts${path.sep}widgets${path.sep}`;
+
+  const content = `
+  // ignore_for_file: must_be_immutable
+
+import 'package:flutter/material.dart';
+
+class ResponsiveLayout extends StatelessWidget {
+  final Widget desktop;
+  Widget? tablet;
+  final Widget mobile;
+
+  ResponsiveLayout({
+    Key? key,
+    required this.desktop,
+    this.tablet,
+    required this.mobile,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 1200) {
+          return desktop;
+        } else if (constraints.maxWidth > 800 && constraints.maxWidth < 1200) {
+          return tablet ?? desktop;
+        } else {
+          return mobile;
+        }
+      },
+    );
+  }
+}
+  `;
+  fs.writeFile(path.join(newPath, `responsive_layout.dart`), content, (err) =>
+    console.log(err)
+  );
+}function createMainLayout(pagePath, pageName) {
+  var newPath = pagePath + `ui${path.sep}layouts${path.sep}`;
 
   const content = `import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../controllers/main_controller.dart';
+import '../../controllers/main_controller.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MainLayout extends GetView<MainController> {
@@ -393,7 +433,7 @@ class MainLayout extends GetView<MainController> {
   );
 }
 
-function createDependecyInjection(pagePath, withFirebase = true) {
+function createDependencyInjection(pagePath, withFirebase = true) {
   var newPath = pagePath + `data${path.sep}services`;
 
   const content = `
@@ -410,7 +450,7 @@ import '../../../firebase_options.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class DependecyInjection {
+class DependencyInjection {
 static Future<void> init() async {
 ${
   withFirebase
@@ -500,7 +540,7 @@ class ThemeService {
     console.log(err)
   );
 }
-function createTraslationService(pagePath) {
+function createTranslationService(pagePath) {
   var newPath = pagePath + `data${path.sep}services${path.sep}`;
 
   const content = `
@@ -582,12 +622,12 @@ import 'app/data/services/theme_service.dart';
 import 'app/data/services/translations_service.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
-import 'app/ui/layouts/main/main_layout.dart';
+import 'app/ui/layouts/main_layout.dart';
 import 'app/ui/theme/themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  DependecyInjection.init();
+  DependencyInjection.init();
 
   runApp(const MyApp());
 }
@@ -627,7 +667,7 @@ class MyApp extends StatelessWidget {
     console.log(err)
   );
 }
-function createTraslation(pagePath, pageName) {
+function createTranslation(pagePath, pageName) {
   var newPath = pagePath + `translation`;
 
   const en =
@@ -649,7 +689,7 @@ function createTraslation(pagePath, pageName) {
   fs.writeFile(path.join(newPath, `ar.dart`), ar, (err) => console.log(err));
 }
 
-function createPubSpect(pagePath, pageName, withFirebase = true) {
+function createPubSpec(pagePath, pageName, withFirebase = true) {
   const content =
     `name: ` +
     pageName +
@@ -691,7 +731,7 @@ dev_dependencies:
   
 # #to make native splash screen
 # # 1) change path image_path
-# # 2) run commened -> flutter pub run flutter_native_splash:create
+# # 2) run commend -> flutter pub run flutter_native_splash:create
 #   flutter_native_splash: ^2.1.1
 # flutter_native_splash:
 #   background_image: assets/image/splash_background.png # choose one color or background
@@ -700,7 +740,7 @@ dev_dependencies:
 
 # # to change icon 
 # # 1) change path image_path
-# # 2) run commened -> flutter pub run flutter_launcher_icons:main
+# # 2) run commend -> flutter pub run flutter_launcher_icons:main
 #   flutter_launcher_icons: ^0.9.2
 # flutter_icons:
 #   android: true
@@ -900,7 +940,7 @@ class ` +
   Stream<Either<FirestoreFailure, List<DocumentSnapshot>>>
       getElements() async* {
     try {
-      print('do somenthing');
+      print('do something');
     } catch (e) {
       yield left(const FirestoreFailure.unexpected());
     }
@@ -939,7 +979,7 @@ function createPage(pagePath, pageName, updateFiles) {
   const content =
     `import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../layouts/main/main_layout.dart';
+import '../../layouts/main_layout.dart';
 
 import '../../../controllers/` +
     pageName +
@@ -1048,7 +1088,7 @@ import '../ui/pages/` +
     console.log(data);
   });
 }
-function frendlyText(text) {
+function friendlyText(text) {
   var _newText = text.toLowerCase();
   _newText = removeSpecialCharacters(_newText);
   _newText = removeAccents(_newText);
@@ -1059,8 +1099,8 @@ function frendlyText(text) {
 
 function capitalizeName(text) {
   var _newText = text.replaceAll("_", " ");
-  var pepe2 = _newText.replace(/\b[a-z]/g, (match) => match.toUpperCase());
-  var _newText2 = pepe2.replaceAll(" ", "");
+  var lowerCase = _newText.replace(/\b[a-z]/g, (match) => match.toUpperCase());
+  var _newText2 = lowerCase.replaceAll(" ", "");
   return _newText2.trim();
 }
 
