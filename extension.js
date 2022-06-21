@@ -653,7 +653,9 @@ class MyApp extends StatelessWidget {
           unknownRoute: AppPages.unknownRoutePage,
           getPages: AppPages.pages,
           builder: (_, child) {
-            return MainLayout(child: child!);
+            return Scaffold(
+              body: MainLayout(child: child!),
+            );
           },
         );
       },
