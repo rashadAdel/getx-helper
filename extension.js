@@ -14,10 +14,10 @@ function activate(context) {
     function () {
       var _path = folderPath + `${path.sep}lib${path.sep}app${path.sep}`;
       createFolders(_path);
-      
+
       vscode.window
         .showQuickPick(
-          [      
+          [
             { label: "Yes", description: "Use Firebase" },
             { label: "No", description: "Don't use Firebase" },
           ],
@@ -26,12 +26,12 @@ function activate(context) {
             placeHolder: "Do you want to use firebase?",
           }
         )
-        .then( (value) => {
+        .then((value) => {
           if (value != undefined) {
             var withFirebase = value.label == "Yes";
-            createFirstFiles(folderPath, vscode.workspace.name,withFirebase);
+            createFirstFiles(folderPath, vscode.workspace.name, withFirebase);
             if (withFirebase) {
-               addFirebase(folderPath);
+              addFirebase(folderPath);
             }
           }
         })
@@ -410,7 +410,8 @@ class ResponsiveLayout extends StatelessWidget {
   fs.writeFile(path.join(newPath, `responsive_layout.dart`), content, (err) =>
     console.log(err)
   );
-}function createMainLayout(pagePath, pageName) {
+}
+function createMainLayout(pagePath, pageName) {
   var newPath = pagePath + `ui${path.sep}layouts${path.sep}`;
 
   const content = `import 'package:flutter/material.dart';
